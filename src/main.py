@@ -376,48 +376,55 @@ def verify_with_openssl(plaintext, key, iv):
 
 # Пример использования
 if __name__ == "__main__":
-    # Ключ 128 бит (16 байт)
-    key = b"MySecretKey12345"
-    
-    # Вектор инициализации (для режима CBC)
-    iv = b"InitVectorAES128"
-    
-    # Исходные данные для шифрования
-    plaintext = b"This is a secret message that needs to be encrypted using AES-128."
-    
-    print("Оригинальный текст:", plaintext.decode())
-    
-    # Шифрование
-    ciphertext = aes_encrypt(plaintext, key, iv)
-    print("\nШифротекст (в шестнадцатеричном виде):", ciphertext.hex())
-    
-    # Расшифрование
-    decrypted = aes_decrypt(ciphertext, key, iv)
-    print("\nРасшифрованный текст:", decrypted.decode())
-    
-    # Проверка
-    print("\nРезультат проверки:", "Успешно" if plaintext == decrypted else "Ошибка")
-    
-    # Проверка с помощью OpenSSL
-    print("\n--- Проверка с помощью OpenSSL ---")
-    success, openssl_ciphertext, openssl_decrypted = verify_with_openssl(plaintext, key, iv)
-    
-    if success:
-        print("OpenSSL шифрование/расшифрование успешно выполнено.")
-        print("\nСравнение с нашей реализацией:")
+    # Импортируем и запускаем GUI, если это основной скрипт
+    try:
+        from gui import AES128App
+        app = AES128App()
+        app.mainloop()
+    except ImportError:
+        # Если GUI не найден, запустим демонстрационный пример в консоли
+        # Ключ 128 бит (16 байт)
+        key = b"MySecretKey12345"
         
-        # Сравниваем результаты шифрования
-        if openssl_ciphertext == ciphertext:
-            print("- Шифротексты совпадают: ДА")
-        else:
-            print("- Шифротексты совпадают: НЕТ")
-            print("  OpenSSL шифротекст:", openssl_ciphertext.hex())
-            print("  Наш шифротекст:    ", ciphertext.hex())
+        # Вектор инициализации (для режима CBC)
+        iv = b"InitVectorAES128"
         
-        # Сравниваем результаты расшифрования
-        if openssl_decrypted == plaintext:
-            print("- Результаты расшифрования совпадают с исходным текстом: ДА")
+        # Исходные данные для шифрования
+        plaintext = b"This is a secret message that needs to be encrypted using AES-128."
+        
+        print("Оригинальный текст:", plaintext.decode())
+        
+        # Шифрование
+        ciphertext = aes_encrypt(plaintext, key, iv)
+        print("\nШифротекст (в шестнадцатеричном виде):", ciphertext.hex())
+        
+        # Расшифрование
+        decrypted = aes_decrypt(ciphertext, key, iv)
+        print("\nРасшифрованный текст:", decrypted.decode())
+        
+        # Проверка
+        print("\nРезультат проверки:", "Успешно" if plaintext == decrypted else "Ошибка")
+        
+        # Проверка с помощью OpenSSL
+        print("\n--- Проверка с помощью OpenSSL ---")
+        success, openssl_ciphertext, openssl_decrypted = verify_with_openssl(plaintext, key, iv)
+        
+        if success:
+            print("OpenSSL шифрование/расшифрование успешно выполнено.")
+            print("\nСравнение с нашей реализацией:")
+            
+            # Сравниваем результаты шифрования
+            if openssl_ciphertext == ciphertext:
+                print("- Шифротексты совпадают: ДА")
+            else:
+                print("- Шифротексты совпадают: НЕТ")
+                print("  OpenSSL шифротекст:", openssl_ciphertext.hex())
+                print("  Наш шифротекст:    ", ciphertext.hex())
+            
+            # Сравниваем результаты расшифрования
+            if openssl_decrypted == plaintext:
+                print("- Результаты расшифрования совпадают с исходным текстом: ДА")
+            else:
+                print("- Результаты расшифрования совпадают с исходным текстом: НЕТ")
         else:
-            print("- Результаты расшифрования совпадают с исходным текстом: НЕТ")
-    else:
-        print("Не удалось выполнить проверку с OpenSSL. Убедитесь, что OpenSSL установлен и доступен в системе.")
+            print("Не удалось выполнить проверку с OpenSSL. Убедитесь, что OpenSSL установлен и доступен в системе.")
